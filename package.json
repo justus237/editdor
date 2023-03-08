@@ -5,6 +5,8 @@
   "homepage": "https://eclipse.github.io/editdor/",
   "dependencies": {
     "@babel/core": "7.18.10",
+    "@node-wot/binding-http": "^0.8.5",
+    "@node-wot/core": "^0.8.5",
     "@svgr/webpack": "4.3.3",
     "@testing-library/jest-dom": "4.2.4",
     "@testing-library/react": "9.5.0",

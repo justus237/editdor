@@ -13,7 +13,7 @@
 import React, { useReducer } from 'react';
 
 import EdiTDorContext from './ediTDorContext';
-import { editdorReducer, REMOVE_FORM_FROM_TD, REMOVE_LINK_FROM_TD, UPDATE_IS_THINGMODEL, SET_FILE_HANDLE, UPDATE_IS_MODFIED, UPDATE_OFFLINE_TD, ADD_PROPERTYFORM_TO_TD, ADD_ACTIONFORM_TO_TD, ADD_EVENTFORM_TO_TD, REMOVE_ONE_OF_A_KIND_FROM_TD, UPDATE_SHOW_CONVERT_BTN, ADD_LINKED_TD, UPDATE_LINKED_TD, UPDATE_VALIDATION_MESSAGE} from './editorReducers';
+import { editdorReducer, REMOVE_FORM_FROM_TD, REMOVE_LINK_FROM_TD, UPDATE_IS_THINGMODEL, SET_FILE_HANDLE, UPDATE_IS_MODFIED, UPDATE_OFFLINE_TD, ADD_PROPERTYFORM_TO_TD, ADD_ACTIONFORM_TO_TD, ADD_EVENTFORM_TO_TD, REMOVE_ONE_OF_A_KIND_FROM_TD, UPDATE_SHOW_CONVERT_BTN, ADD_LINKED_TD, UPDATE_LINKED_TD, UPDATE_VALIDATION_MESSAGE, EXECUTE_FORM} from './editorReducers';
 
 
 const GlobalState = props => {
@@ -68,8 +68,12 @@ const GlobalState = props => {
     dispatch({ type: UPDATE_LINKED_TD, linkedTd: linkedTd });
   };
 
-  const updateValidationMessage= validationMessage  => {
-      dispatch({type: UPDATE_VALIDATION_MESSAGE, validationMessage: validationMessage})
+  const updateValidationMessage = validationMessage  => {
+    dispatch({type: UPDATE_VALIDATION_MESSAGE, validationMessage: validationMessage})
+  };
+
+  const executeHTTPOfForm = form => {
+    dispatch({type: EXECUTE_FORM, form: form})
   }
 
   return (
@@ -97,8 +101,8 @@ const GlobalState = props => {
         updateShowConvertBtn,
         addLinkedTd,
         updateLinkedTd,
-        updateValidationMessage
-
+        updateValidationMessage,
+        executeHTTPOfForm
       }}
     >
       {props.children}
