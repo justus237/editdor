@@ -12,6 +12,7 @@
  ********************************************************************************/
 import { Servient } from "@node-wot/core";
 import { HttpsClientFactory, HttpClientFactory } from "@node-wot/binding-http";
+import { ReadableStream } from "web-streams-polyfill/ponyfill/es2018";
 export const UPDATE_OFFLINE_TD = 'UPDATE_OFFLINE_TD';
 export const UPDATE_IS_MODFIED = 'UPDATE_IS_MODFIED';
 export const UPDATE_IS_THINGMODEL = 'UPDATE_IS_THINGMODEL';
@@ -27,6 +28,7 @@ export const ADD_LINKED_TD = 'ADD_LINKED_TD';
 export const UPDATE_LINKED_TD = 'UPDATE_LINKED_TD';
 export const UPDATE_VALIDATION_MESSAGE = 'UPDATE_VALIDATION_MESSAGE';
 export const EXECUTE_FORM = 'EXECUTE_FORM';
+
 
 const updateOfflineTDReducer = (offlineTD, state) => {
   console.log("updateOfflineTDReducer")
@@ -235,8 +237,8 @@ const executeHTTPOfFormReducer = (form, state) => {
       const scheme = secDefs[0].scheme
       if (scheme === "basic") {
         const tdId = offlineTD.id;
-        const username = window.prompt("HTTP basic auth username","!!! this will be stored in plaintext in memory on the server!!!");
-        const password = window.prompt("HTTP basic auth password","!!! this will be stored in plaintext in memory on the server!!!");
+        const username = window.prompt("HTTP basic auth username\n!!! this will be stored in plaintext in memory on the server!!!","username");
+        const password = window.prompt("HTTP basic auth password\n!!! this will be stored in plaintext in memory on the server!!!","password");
         let credentials = {}
         credentials[tdId] = {username: username, password: password}
         servient.addCredentials(credentials);
@@ -288,10 +290,17 @@ const executeHTTPOfFormReducer = (form, state) => {
               throw new Error("TODO writing object/array typed properties not implemented, use JSON.parse for this maybe")
           }
         }
-        thing.writeProperty(form.propName, input)
-        .then(() => console.log("wrote property successfully"))
+        //TODO for some reason the built-in stream type won't import in content-serdes.{js, ts}
+        let readableStreamBecauseBuiltInIsBrokenForNoReason = new ReadableStream(
+          {
+            start(controller) {
+              controller.enqueue(input)
+              controller.close()
+            }})
+        return thing.writeProperty(form.propName, readableStreamBecauseBuiltInIsBrokenForNoReason)
+        /*.then(() => console.log("wrote property successfully"))
         .catch((err) => console.log(err.stack))
-        return undefined
+        return undefined*/
       case "invokeaction":
         if ("input" in offlineTD.actions[form.propName]) {
           console.log("requires input")
